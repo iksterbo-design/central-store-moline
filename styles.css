@@ -868,6 +868,8 @@ button {
   font-size: 0.78rem;
   font-weight: 700;
   color: #8c4d06;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .beer-card__name {
@@ -919,10 +921,15 @@ button {
 .beer-card__specs {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.55rem;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--text-dark);
+}
+
+.beer-card__specs span {
+  white-space: nowrap;
 }
 
 .beer-card__price {
@@ -942,6 +949,8 @@ button {
   font-family: var(--font-mono);
   font-size: 0.74rem;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.15s ease;
 }
 

@@ -293,10 +293,10 @@ window.CENTRAL_STORE_DATA = {
       style: "Barrel-Aged Imperial Coffee Stout",
       category: "Stout",
       abv: 14.8,
-      price: "Ask Bartender",
+      price: "Ask Bar",
       priceNum: 1.15,
       rating: 4.29,
-      highlight: "Deep Wood Series"
+      highlight: "Deep Wood"
     },
     {
       id: "draft-4",
@@ -321,7 +321,7 @@ window.CENTRAL_STORE_DATA = {
       price: "$1.00 / oz",
       priceNum: 1.00,
       rating: 4.23,
-      highlight: "Deep Wood Series"
+      highlight: "Deep Wood"
     },
     {
       id: "draft-6",
