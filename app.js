@@ -17,6 +17,7 @@
     lightboxIndex: 0,
     filteredGallery: [...DATA.gallery],
     activeSuite: "store", // 'store' | 'craft'
+    mixSix: [],
     wishlist: loadWishlist()
   };
 
@@ -374,14 +375,24 @@
                 <div class="beer-card__specs">
                   <span>${esc(item.format)}</span>
                 </div>
-                <button
-                  type="button"
-                  class="save-btn ${saved ? "is-saved" : ""}"
-                  data-save-id="${esc(item.id)}"
-                  aria-pressed="${saved}"
-                >
-                  ${saved ? "✓ Saved" : "+ List"}
-                </button>
+                <div style="display:flex; gap:0.35rem; flex-shrink:0;">
+                  <button
+                    type="button"
+                    class="save-btn ${state.mixSix.some((m) => m.id === item.id) ? "is-saved" : ""}"
+                    data-mix-id="${esc(item.id)}"
+                    title="Add to your custom Mix-a-6 carrier"
+                  >
+                    ${state.mixSix.some((m) => m.id === item.id) ? "✓ 6-Pack" : "+ 6-Pack"}
+                  </button>
+                  <button
+                    type="button"
+                    class="save-btn ${saved ? "is-saved" : ""}"
+                    data-save-id="${esc(item.id)}"
+                    aria-pressed="${saved}"
+                  >
+                    ${saved ? "✓ Saved" : "+ List"}
+                  </button>
+                </div>
               </div>
             </article>
           `;
@@ -664,6 +675,97 @@
   }
 
   // =========================================================================
+  // Mix-a-6 Cooler Carrier Builder
+  // =========================================================================
+  function renderMixSix() {
+    const slotsEl = document.getElementById("mix-six-slots");
+    const statusEl = document.getElementById("mix-six-status");
+    const saveAllBtn = document.getElementById("mix-six-save-all");
+    if (!slotsEl) return;
+
+    const count = state.mixSix.length;
+    if (statusEl) {
+      statusEl.textContent =
+        count === 6
+          ? "6 / 6 Carrier Full — Ready for Suite D Cooler!"
+          : `${count} / 6 Cans Picked · Mix singles from our 304+ cooler wall`;
+    }
+    if (saveAllBtn) {
+      saveAllBtn.disabled = count === 0;
+      saveAllBtn.style.opacity = count === 0 ? "0.55" : "1";
+    }
+
+    const slotsHtml = [];
+    for (let i = 0; i < 6; i++) {
+      const can = state.mixSix[i];
+      if (can) {
+        slotsHtml.push(`
+          <div class="can-slot is-filled">
+            <div class="can-slot__num">
+              <span>Can #${i + 1}</span>
+              <button
+                type="button"
+                class="can-slot__remove"
+                data-mix-remove="${i}"
+                aria-label="Remove ${esc(can.name)} from slot ${i + 1}"
+              >&times;</button>
+            </div>
+            <div>
+              <div class="can-slot__name">${esc(can.name)}</div>
+              <div class="can-slot__sub">${esc(can.brewery)} · ${can.abv.toFixed(1)}%</div>
+            </div>
+          </div>
+        `);
+      } else {
+        slotsHtml.push(`
+          <div class="can-slot">
+            <div class="can-slot__num"><span>Can #${i + 1}</span></div>
+            <div class="can-slot__empty">Empty Slot</div>
+          </div>
+        `);
+      }
+    }
+    slotsEl.innerHTML = slotsHtml.join("");
+  }
+
+  function addCanToMixSix(coolerId) {
+    const can = DATA.cooler.find((c) => c.id === coolerId);
+    if (!can) return;
+    if (state.mixSix.length >= 6) {
+      showToast("Your Mix-a-6 carrier is full! Remove a can or save to your Visit List.");
+      return;
+    }
+    state.mixSix.push(can);
+    renderMixSix();
+    renderBoard();
+    showToast(`Added "${can.name}" to Can #${state.mixSix.length} of your Mix-a-6`);
+  }
+
+  function fillSurpriseMixSix() {
+    const byCat = {};
+    DATA.cooler.forEach((c) => {
+      if (!byCat[c.category]) byCat[c.category] = [];
+      byCat[c.category].push(c);
+    });
+    const order = ["Hazy IPA", "Sour", "IPA", "Lager", "Seasonal", "Stout"];
+    const picked = [];
+    order.forEach((cat) => {
+      const pool = byCat[cat];
+      if (pool && pool.length) {
+        picked.push(pool[Math.floor(Math.random() * pool.length)]);
+      }
+    });
+    while (picked.length < 6 && picked.length < DATA.cooler.length) {
+      const cand = DATA.cooler[Math.floor(Math.random() * DATA.cooler.length)];
+      if (!picked.some((p) => p.id === cand.id)) picked.push(cand);
+    }
+    state.mixSix = picked.slice(0, 6);
+    renderMixSix();
+    renderBoard();
+    showToast("Built a balanced 6-pack across Hazy IPA, Sour, IPA, Lager, Seasonal & Stout!");
+  }
+
+  // =========================================================================
   // Suite Switcher in Visit Section
   // =========================================================================
   function renderSuiteFocus() {
@@ -809,6 +911,11 @@
 
     // Board grid actions
     document.getElementById("beer-grid")?.addEventListener("click", (e) => {
+      const mixBtn = e.target.closest("[data-mix-id]");
+      if (mixBtn) {
+        addCanToMixSix(mixBtn.dataset.mixId);
+        return;
+      }
       const saveBtn = e.target.closest("[data-save-id]");
       if (saveBtn) {
         toggleWishlistItem(saveBtn.dataset.saveId);
@@ -822,6 +929,53 @@
         renderFilterChips();
         renderBoard();
       }
+    });
+
+    // Mix-a-6 Carrier Controls
+    document.getElementById("mix-six-slots")?.addEventListener("click", (e) => {
+      const rem = e.target.closest("[data-mix-remove]");
+      if (!rem) return;
+      const idx = Number(rem.dataset.mixRemove);
+      if (idx >= 0 && idx < state.mixSix.length) {
+        const removed = state.mixSix.splice(idx, 1)[0];
+        renderMixSix();
+        renderBoard();
+        showToast(`Removed "${removed.name}" from your Mix-a-6`);
+      }
+    });
+
+    document.getElementById("mix-six-surprise")?.addEventListener("click", fillSurpriseMixSix);
+
+    document.getElementById("mix-six-clear")?.addEventListener("click", () => {
+      if (!state.mixSix.length) return;
+      state.mixSix = [];
+      renderMixSix();
+      renderBoard();
+      showToast("Mix-a-6 carrier cleared");
+    });
+
+    document.getElementById("mix-six-save-all")?.addEventListener("click", () => {
+      if (!state.mixSix.length) return;
+      let added = 0;
+      state.mixSix.forEach((can) => {
+        if (!isSaved(can.id)) {
+          state.wishlist.push({
+            id: can.id,
+            name: can.name,
+            sub: `${can.brewery} · Mix-a-6 Cooler (${can.abv}% ABV)`
+          });
+          added++;
+        }
+      });
+      saveWishlist();
+      renderBoard();
+      renderPourFinder();
+      renderWishlistUI();
+      showToast(
+        added > 0
+          ? `Saved ${added} Mix-a-6 pick${added > 1 ? "s" : ""} to your Visit List!`
+          : "All Mix-a-6 picks are already in your Visit List!"
+      );
     });
 
     // Wishlist Drawer
@@ -995,6 +1149,7 @@
   renderFilterChips();
   renderSortOptions();
   renderBoard();
+  renderMixSix();
   renderReels();
   renderGalleryFilters();
   renderGallery();

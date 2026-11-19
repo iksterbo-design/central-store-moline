@@ -2305,6 +2305,233 @@ button {
   color: #101214;
 }
 
+/* ==========================================================================
+   Mix-a-6 Craft Carrier Builder
+   ========================================================================== */
+.mix-six {
+  background: var(--bg-white);
+  border: 1px solid var(--border-light-strong);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.2rem, 2.5vw, 1.65rem);
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-light);
+}
+
+.mix-six__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.mix-six__title {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin: 0.2rem 0 0;
+  color: var(--text-dark);
+  line-height: 1;
+}
+
+.mix-six__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.mix-six__slots {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.can-slot {
+  position: relative;
+  border-radius: var(--radius-sm);
+  border: 1.5px dashed var(--border-light-strong);
+  background: var(--bg-stone);
+  padding: 0.72rem 0.65rem;
+  min-height: 102px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.35rem;
+  transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.can-slot.is-filled {
+  border-style: solid;
+  border-color: var(--amber-deep);
+  background: linear-gradient(160deg, #fffdf9 0%, #f8eedc 100%);
+}
+
+.can-slot__num {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-dark-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.can-slot.is-filled .can-slot__num {
+  color: var(--rust);
+}
+
+.can-slot__remove {
+  border: 0;
+  background: transparent;
+  color: var(--text-dark-muted);
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.can-slot__remove:hover {
+  color: var(--rust);
+}
+
+.can-slot__name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--text-dark);
+}
+
+.can-slot__sub {
+  font-size: 0.72rem;
+  color: var(--text-dark-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.can-slot__empty {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-dark-muted);
+  margin: auto 0;
+}
+
+/* ==========================================================================
+   Weekly Drop Rhythm & Gift Cards Banner
+   ========================================================================== */
+.rhythm-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.1rem;
+  margin-top: 2rem;
+}
+
+.rhythm-card {
+  background: var(--bg-obsidian);
+  color: var(--text-light);
+  border: 1px solid var(--border-dark-strong);
+  border-radius: var(--radius-md);
+  padding: 1.35rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-light);
+}
+
+.rhythm-card__day {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--amber-bright);
+}
+
+.rhythm-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.05;
+  color: var(--text-light);
+}
+
+.rhythm-card p {
+  margin: 0;
+  font-size: 0.87rem;
+  color: var(--text-light-muted);
+}
+
+/* ==========================================================================
+   First-Timer's Guide / Store FAQ Accordion
+   ========================================================================== */
+.faq-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.95rem;
+}
+
+.faq-item {
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-light);
+  overflow: hidden;
+}
+
+.faq-item[open] {
+  border-color: rgba(168, 98, 18, 0.5);
+}
+
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 1.1rem 1.25rem;
+  font-weight: 700;
+  font-size: 0.96rem;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: "+";
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--rust);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.faq-item[open] summary::after {
+  content: "−";
+  color: var(--amber-deep);
+}
+
+.faq-item__body {
+  padding: 0 1.25rem 1.15rem;
+  font-size: 0.88rem;
+  color: var(--text-dark-muted);
+  border-top: 1px dashed var(--border-light);
+  padding-top: 0.85rem;
+}
+
+.faq-item__body p {
+  margin: 0;
+}
+
 /* Scroll Reveal Choreography */
 .reveal {
   opacity: 0;
@@ -2338,6 +2565,10 @@ button {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .mix-six__slots {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .footer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2357,6 +2588,8 @@ button {
   .craft-split,
   .story-split,
   .request-shell,
+  .rhythm-grid,
+  .faq-list,
   .visit-grid {
     grid-template-columns: 1fr;
   }
@@ -2444,6 +2677,10 @@ button {
   .visit-info-grid,
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+
+  .mix-six__slots {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .bourbon-card--wide {
